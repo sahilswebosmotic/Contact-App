@@ -19,7 +19,6 @@ import {
     TableCell,
     TableBody,
 } from "@mui/material";
-
 function Dashboard() {
     const navigate = useNavigate();
 
@@ -37,16 +36,14 @@ function Dashboard() {
 
     const user = JSON.parse(localStorage.getItem("currentUser"));
 
+
+
     useEffect(() => {
         if (!user) {
             navigate("/login");
             return;
-        }else{
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setUserData(user.Contacts || []);
         }
     }, [user, navigate]);
-
 
 
 
@@ -187,15 +184,6 @@ function Dashboard() {
         setUserData(updatedCurrentUser.Contacts);
     };
 
-    const[importOpen, setImportOpen] = useState(false);
-    const handleImportOpen = () => setImportOpen(true);
-    const handleImportClose = () => setImportOpen(false);
-
-        const handleExportExcel = () => {
-        alert("Export to Excel not implemented yet");
-        };
-
-
     return (
         <>
             <Box>
@@ -217,7 +205,7 @@ function Dashboard() {
                                 color="warning"
                                 variant="contained"
                                 sx={{ mx: 1 }}
-                                onClick={handleExportExcel}
+                                onClick={() => console.log("Export not implemented")}
                             >
                                 Export Excel
                             </Button>
@@ -226,7 +214,7 @@ function Dashboard() {
                                 color="success"
                                 variant="contained"
                                 sx={{ mx: 1 }}
-                                onClick={handleImportOpen}
+                                onClick={() => console.log("Import not implemented")}
                             >
                                 Import Excel
                             </Button>
@@ -238,7 +226,9 @@ function Dashboard() {
             <Box sx={{ margin: "1% 10%" }}>
                 <Paper elevation={6} sx={{ borderRadius: 3, p: 2 }}>
                     <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-                        <Button onClick={handleOpen} variant="outlined">
+                        <Button 
+                        onClick={handleOpen} 
+                        variant="outlined">
                             Add Contact
                         </Button>
 
@@ -250,7 +240,8 @@ function Dashboard() {
             </Box>
 
 
-            <Modal open={open} onClose={handleClose}   >
+            <Modal open={open} onClose={handleClose}>
+            {/* <AddContact /> */}
                 <Box
                     sx={{
                         minHeight: "100vh",
@@ -259,7 +250,7 @@ function Dashboard() {
                         justifyContent: "center",
                     }}
                 >
-                    <Paper sx={{ p: 3, width: "100%", maxWidth: '25vw', borderRadius: 3 }}>
+                    <Paper sx={{ p: 3, width: 320 }}>
                         <Box
                             component="form"
                             onSubmit={handleSubmit}
@@ -321,7 +312,7 @@ function Dashboard() {
                         </Box>
                     </Paper>
                 </Box>
-            </Modal>
+            </Modal> 
 
 
 
@@ -335,7 +326,7 @@ function Dashboard() {
                         p: 3,
                     }}
                 >
-                    <TableContainer component={Paper} sx={{ maxWidth: '80vw' , maxHeight: '80vh' }}>
+                    <TableContainer component={Paper} sx={{ maxWidth: "80vw", maxHeight: "80vh" }}>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -343,7 +334,7 @@ function Dashboard() {
                                     <TableCell>Name</TableCell>
                                     <TableCell>Email</TableCell>
                                     <TableCell>Phone Number</TableCell>
-                                    <TableCell sx={{ justifyContent: "center" }}>Actions</TableCell>
+                                    <TableCell>Action</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -352,35 +343,31 @@ function Dashboard() {
                                     <TableRow key={contact.Contact_id}>
                                         <TableCell>
                                             {contact.profilImage ? (
-                                                <Avatar 
-                                                src={contact.profilImage}
+                                                <Avatar
+                                                    src={contact.profilImage}
                                                 />
                                             ) : (
                                                 "—"
                                             )}
                                         </TableCell>
-                                        <TableCell>{contact.name ? contact.name : "—" }</TableCell>
-                                        <TableCell>{contact.email ? contact.email : "—" }</TableCell>
-                                        <TableCell>{contact.phonenumber ? contact.phonenumber : "—" }</TableCell>
+                                        <TableCell>{contact.name ? contact.name : "—"}</TableCell>
+                                        <TableCell>{contact.email ? contact.email : "—"}</TableCell>
+                                        <TableCell>{contact.phonenumber ? contact.phonenumber : "—"}</TableCell>
                                         <TableCell>
-                                            <Container   sx={{display:"flex", p: 0,gap: 1 , }}>
                                             <Button
                                                 color="error"
-                                                sx={{":hover": {backgroundColor: "red",color: "white"},borderRadius: 10, justifyContent: "center"}}
                                                 variant="outlined"
                                                 onClick={() => handleDeleteContatct(contact.Contact_id)}
-                                                >
+                                            >
                                                 Delete
                                             </Button>
                                             <Button
-                                                sx={{":hover": {backgroundColor: "green",color: "white"},borderRadius: 10, justifyContent: "center"}}
-                                                color="success"
+                                                color="error"
                                                 variant="outlined"
                                                 // onClick={() => handleUpdateContact(contact.Contact_id)}
-                                                >
+                                            >
                                                 Update
                                             </Button>
-                                            </Container>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -389,28 +376,6 @@ function Dashboard() {
                     </TableContainer>
                 </Box>
             </Modal>
-
-            {/* Import Model for excel file */}
-            <Modal open={importOpen} onClose={handleImportClose}>
-                <Box 
-                sx={{
-                        minHeight: "100vh",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                    >
-                    <Container sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" , p: 3, borderRadius: 3, backgroundColor: "white"}}>
-                    <Typography variant="h6">Import Contacts from Excel</Typography>
-
-                    <Button variant="contained" component="label">
-                        Upload Excel File
-                        <input hidden type="file" accept=".xlsx, .xls" />
-                    </Button>
-                    </Container>
-                </Box>
-            </Modal>
-
         </>
     );
 }

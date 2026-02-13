@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
     Box,
@@ -65,6 +66,7 @@ function Login() {
             setErrors({
                 email: "Email is not registered"
             });
+            navigate("/");
             return;
         }
 
@@ -91,7 +93,7 @@ function Login() {
                 px: 2
             }}
         >
-            <Paper elevation={6} sx={{ width: "100%", maxWidth: 460, borderRadius: 3 }}>
+            <Paper elevation={24} sx={{ width: "100%", maxWidth: 460, borderRadius: 3 }}>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ p: 4, display: "flex", flexDirection: "column", gap: 2.2 }}>
                     <Typography variant="h4" textAlign="center" gutterBottom>
                         Login

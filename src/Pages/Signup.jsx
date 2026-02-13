@@ -8,6 +8,7 @@ import {
     Link
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Contacts } from "@mui/icons-material";
 
 function Signup() {
     const navigate = useNavigate();
@@ -15,7 +16,8 @@ function Signup() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        confirmpassword: "",
     });
 
     const [errors, setErrors] = useState({});
@@ -57,33 +59,75 @@ function Signup() {
             newErrors.password = "Password must be at least 6 characters";
         }
 
+        if(!formData.confirmpassword){
+            newErrors.confirmpassword = "Confirm Password is Required";
+        }
+        else if(formData.password != formData.confirmpassword){
+            newErrors.confirmpassword = "Check the password "
+        }
+
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
 
-        if (!validateForm()) {
-            return;
-        }
+    //     if (!validateForm()) {
+    //         return;
+    //     }
 
-        const users = JSON.parse(localStorage.getItem("users")) || [];
+    //     const users = JSON.parse(localStorage.getItem("users")) || [];
 
         // Check if email already exists
-        const userExists = users.find(user => user.email === formData.email);
+        // const userExists = users.find(user => user.email === formData.email);
 
-        if (userExists) {
-            setErrors({ email: "Email already registered" });
-            return;
-        }
+        // if (userExists) {
+        //     setErrors({ email: "Email already registered" });
+        //     return;
+        // }
 
-        users.push(formData);
-        localStorage.setItem("users", JSON.stringify(users));
+    //     users.push(formData);
 
-        alert("Signup successful! Please login.");
-        navigate("/login");
+    //     localStorage.setItem("users", JSON.stringify(users));
+
+    //     navigate("/login");
+    // };
+
+    const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const email = formData.email.trim().toLowerCase();
+
+    const userExists = users.find(
+        (user) => user.email.toLowerCase() === email
+    );
+
+    if (userExists) {
+        setErrors({ email: "Email already registered" });
+        return;
+    }
+
+    const newUser = {
+        User_id: Date.now(),
+        name: formData.name.trim(),
+        email : email,
+        password: formData.password, 
+        Contacts:[]
     };
+
+    users.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    navigate("/login");
+};
+
 
     return (
         <Box
@@ -102,7 +146,7 @@ function Signup() {
                     px: 2
                 }}
             >
-            <Paper elevation={6} sx={{ width: "100%", maxWidth: 460, borderRadius: 3 }}>
+            <Paper elevation={24} sx={{ width: "100%", maxWidth: 460, borderRadius: 3 }}>
                 <Box
                     component="form"
                     noValidate
@@ -146,6 +190,17 @@ function Signup() {
                         fullWidth
                         error={!!errors.password}
                         helperText={errors.password}
+                    />
+
+                    <TextField
+                        label="Confirm Password"
+                        name="confirmpassword"
+                        type="password"
+                        value={formData.confirmpassword}
+                        onChange={handleChange}
+                        fullWidth
+                        error={!!errors.confirmpassword}
+                        helperText={errors.confirmpassword}
                     />
 
                     <Button
